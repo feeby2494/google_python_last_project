@@ -5,7 +5,8 @@ import emails
 import requests
 import os
 import re
-
+import datetime
+import datetime
 def build_data():
 
     # need to get our data and build what will be inside the pdf
@@ -30,5 +31,9 @@ def build_data():
     return pdf_text
 
 if __name__ == "__main__":
-    data = build_data()
-    print(data)
+    pdf_body = build_data()
+    current_date = datetime.datetime.now()
+    
+    pdf_report = reports.generate_report("/tmp/processed.pdf", "Processed Updated on {}".format(current_date.strftime("%B %d, %Y")), pdf_body)
+    message = emails.generate_email("automation@example.com", "{}@example.com".format(os.environ.get('USER')), "Upload Completed - Online Fruit Store", "All fruits are uploaded to our website successfully. A detailed list is attached to this email.", "/tmp/processed.pdf")
+    emails.send_email(message)
